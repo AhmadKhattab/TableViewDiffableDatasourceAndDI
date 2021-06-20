@@ -14,6 +14,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Register All Required Dependencies
+        DIContainer.shared.register(serviceType: RemoteDataSourceProtocol.self) { 
+            
+            RemoteDataSource()
+        }
+        
+        DIContainer.shared.register(serviceType: MoviesRepoProtocol.self) {
+            MoviesRepo(remoteDataSource: DIContainer.shared.resolve(serviceType: RemoteDataSourceProtocol.self))
+        }
+        
+        DIContainer.shared.register(serviceType: MoviesViewModel.self) {
+            MoviesViewModel(moviesRepo: DIContainer.shared.resolve(serviceType: MoviesRepoProtocol.self))
+        }
+        
         return true
     }
 
